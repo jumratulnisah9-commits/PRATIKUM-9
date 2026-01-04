@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Form Validation</title>
+
+    <style>
+        .error {
+            color: red;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        input.error-field, select.error-field {
+            border: 1px solid red;
+        }
+        #hasil {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid black;
+            width: 400px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Form Pemesanan Tiket</h2>
+
+<form onsubmit="return validasiForm()">
+
+    Nama Pelanggan: <br>
+    <input type="text" id="nama">
+    <span id="err_nama" class="error"></span>
+    <br><br>
+
+    Email: <br>
+    <input type="text" id="email">
+    <span id="err_email" class="error"></span>
+    <br><br>
+
+    Jam Keberangkatan (00.00 - 23.59): <br>
+    <input type="text" id="jam" placeholder="contoh: 09.30">
+    <span id="err_jam" class="error"></span>
+    <br><br>
+
+    Tujuan Keberangkatan: <br>
+    <input type="text" id="tujuan">
+    <span id="err_tujuan" class="error"></span>
+    <br><br>
+
+    Jumlah Tiket (1 - 10): <br>
+    <input type="number" id="tiket">
+    <span id="err_tiket" class="error"></span>
+    <br><br>
+
+    <button type="submit">Submit</button>
+</form>
+
+<div id="hasil"></div>
+
+<script>
+function validasiForm() {
+    let nama = document.getElementById("nama").value.trim();
+    let email = document.getElementById("email").value.trim();
+    let jam = document.getElementById("jam").value.trim();
+    let tujuan = document.getElementById("tujuan").value.trim();
+    let tiket = document.getElementById("tiket").value.trim();
+
+    resetError();
+
+    let valid = true;
+
+    if (nama === "") {
+        setError("nama", "Nama harus diisi!");
+        valid = false;
+    } else if (nama.length > 30) {
+        setError("nama", "Maksimal 30 karakter!");
+        valid = false;
+    }
+
+    let polaEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (email === "") {
+        setError("email", "Email harus diisi!");
+        valid = false;
+    } else if (!polaEmail.test(email)) {
+        setError("email", "Format email tidak valid!");
+        valid = false;
+    }
+
+    let polaJam = /^(?:[01]\d|2[0-3])\.[0-5]\d$/;
+    if (jam === "") {
+        setError("jam", "Jam harus diisi!");
+        valid = false;
+    } else if (!polaJam.test(jam)) {
+        setError("jam", "Format jam tidak valid!");
+        valid = false;
+    }
+
+    if (tujuan === "") {
+        setError("tujuan", "Tujuan harus diisi!");
+        valid = false;
+    }
+
+    if (tiket === "") {
+        setError("tiket", "Jumlah tiket harus diisi!");
+        valid = false;
+    } else if (tiket < 1 || tiket > 10) {
+        setError("tiket", "Jumlah tiket 1 - 10!");
+        valid = false;
+    }
+
+    if (!valid) return false;
+
+    document.getElementById("hasil").innerHTML =
+        "<h3>Data Pemesanan:</h3>" +
+        "Nama: " + nama + "<br>" +
+        "Email: " + email + "<br>" +
+        "Jam Keberangkatan: " + jam + "<br>" +
+        "Tujuan: " + tujuan + "<br>" +
+        "Jumlah Tiket: " + tiket;
+
+    return false; 
+}
+function setError(field, msg) {
+    document.getElementById("err_" + field).innerHTML = msg;
+    document.getElementById(field).classList.add("error-field");
+}
+function resetError() {
+    let errors = document.querySelectorAll(".error");
+    errors.forEach(e => e.innerHTML = "");
+
+    let fields = document.querySelectorAll("input");
+    fields.forEach(f => f.classList.remove("error-field"));
+}
+</script>
+
+</body>
+</html>
